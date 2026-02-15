@@ -8,7 +8,9 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.14, <4.0"
 dependencies = [
-    "fastapi[standard] (>=0.128.8,<0.129.0)"
+    "fastapi[standard] (>=0.128.8,<0.129.0)",
+    "sqlalchemy (>=2.0.46,<3.0.0)",
+    "pydantic-settings (>=2.12.0,<3.0.0)"
 ]
 
 [tool.poetry]
@@ -46,7 +48,7 @@ pythonpath = "."
 lint = 'ruff check'
 pre_format = 'ruff check --fix'
 format = 'ruff format'
-run = 'fastapi dev madr/app.py'
+run = 'fastapi dev src/madr/main.py'
 pre_test = 'task lint'
 test = 'pytest -s -x --cov=madr -vv'
 post_test = 'coverage html'
