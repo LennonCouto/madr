@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from madr.routers import contas
+from app.routers import contas
 
 app = FastAPI()
 

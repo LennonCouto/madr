@@ -2,9 +2,9 @@ from http import HTTPStatus
 
 from fastapi import Depends, APIRouter
 
-from madr.schemas.conta import UserPublic, UserSchema
-from madr.db.session import get_session
-from madr.models.conta import Conta
+from app.schemas.conta import UserPublic, UserSchema
+from app.db.session import get_session
+from app.models.conta import Conta
 
 router = APIRouter(prefix='/conta', tags=['conta'])
 

@@ -5,10 +5,10 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.madr.db.registry import table_registry
-from src.madr.core.config import Settings
+from app.db.registry import table_registry
+from app.core.config import Settings
 
-from src.madr import models
+from app import models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

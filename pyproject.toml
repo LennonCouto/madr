@@ -49,7 +49,7 @@ pythonpath = "."
 lint = 'ruff check'
 pre_format = 'ruff check --fix'
 format = 'ruff format'
-run = 'fastapi dev src/madr/main.py'
+run = 'fastapi dev app/main.py'
 pre_test = 'task lint'
 test = 'pytest -s -x --cov=madr -vv'
 post_test = 'coverage html'
