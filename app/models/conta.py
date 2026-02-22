@@ -1,6 +1,7 @@
-from sqlalchemy.orm import Mapped, mapped_as_dataclass ,mapped_column
+from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.registry import table_registry
+
 
 @table_registry.mapped_as_dataclass
 class Conta:
