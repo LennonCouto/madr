@@ -1,1 +1,1 @@
-from .conta import Conta as Conta
+from .user import User as User
