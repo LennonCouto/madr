@@ -1,6 +1,7 @@
 from http import HTTPStatus
 
 from fastapi import HTTPException
+from sqlalchemy.exc import IntegrityError
 
 from app.models import User
 from app.repositories import user_repository
@@ -20,8 +21,7 @@ def create_user_service(session, user_schema):
 
         if db_user.email == user_schema.email:
             raise HTTPException(
-                status_code=HTTPStatus.CONFLICT,
-                detail='Email já existe'
+                status_code=HTTPStatus.CONFLICT, detail='Email já existe'
             )
 
     user = User(
@@ -30,4 +30,35 @@ def create_user_service(session, user_schema):
         password=user_schema.password,
     )
 
-    return user_repository.create_user(session, user)
+    user_repository.save(session, user)
+    session.commit()
+    session.refresh(user)
+
+    return user
+
+
+def update_user_service(session, user_schema, user_id: int):
+    user = user_repository.get_by_id(session, user_id)
+
+    if not user:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail='Usuário não encontrado'
+        )
+
+    update_data = user_schema.model_dump(exclude_unset=True)
+
+    for field, value in update_data.items():
+        setattr(user, field, value)
+
+    try:
+        session.add(user)
+        print(update_data)
+        session.commit()
+        session.refresh(user)
+        return user
+
+    except IntegrityError:
+        session.rollback()
+        raise HTTPException(
+            status_code=HTTPStatus.CONFLICT, detail='Nome ou Email já existe'
+        )

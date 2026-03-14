@@ -4,6 +4,11 @@ from sqlalchemy.orm import Session
 from app.models import User
 
 
+def save(session: Session, user: User):
+    session.add(user)
+    return user
+
+
 def get_by_username_or_email(session: Session, username: str, email: str):
     stmt = session.scalar(
         select(User).where((User.username == username) | (User.email == email))
@@ -12,9 +17,6 @@ def get_by_username_or_email(session: Session, username: str, email: str):
     return stmt
 
 
-def create_user(session: Session, user: User):
-    session.add(user)
-    session.commit()
-    session.refresh(user)
-
-    return user
+def get_by_id(session: Session, user_id: int):
+    stmt = session.scalar(select(User).where(User.id == user_id))
+    return stmt
