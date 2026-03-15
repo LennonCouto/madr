@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class UserSchema(BaseModel):
@@ -11,6 +11,15 @@ class UserPublic(BaseModel):
     id: int
     email: EmailStr
     username: str
+
+
+class UserList(BaseModel):
+    users: list[UserPublic]
+
+
+class FilterPage(BaseModel):
+    offset: int = Field(ge=0, default=0)
+    limit: int = Field(ge=1, default=10, le=100)
 
 
 class UserUpdate(BaseModel):

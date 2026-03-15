@@ -52,7 +52,6 @@ def update_user_service(session, user_schema, user_id: int):
 
     try:
         session.add(user)
-        print(update_data)
         session.commit()
         session.refresh(user)
         return user

@@ -20,3 +20,9 @@ def get_by_username_or_email(session: Session, username: str, email: str):
 def get_by_id(session: Session, user_id: int):
     stmt = session.scalar(select(User).where(User.id == user_id))
     return stmt
+
+
+def filter_user(session:Session, limit: int, offset: int):
+    users = session.scalars(select(User).limit(limit).offset(offset)).all()
+
+    return users
