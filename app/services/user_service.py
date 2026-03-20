@@ -61,3 +61,17 @@ def update_user_service(session, user_schema, user_id: int):
         raise HTTPException(
             status_code=HTTPStatus.CONFLICT, detail='Nome ou Email já existe'
         )
+
+
+def delete_user_service(session, user_id: int):
+    user = user_repository.get_by_id(session, user_id)
+
+    if not user:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail='Usuário não encontrado'
+        )
+
+    session.delete(user)
+    session.commit()
+
+    return {'mensagem': 'Usuário deletado'}

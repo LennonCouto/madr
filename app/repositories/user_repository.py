@@ -22,7 +22,7 @@ def get_by_id(session: Session, user_id: int):
     return stmt
 
 
-def filter_user(session:Session, limit: int, offset: int):
+def filter_user(session: Session, limit: int, offset: int):
     users = session.scalars(select(User).limit(limit).offset(offset)).all()
 
     return users

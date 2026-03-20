@@ -4,9 +4,20 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db.session import get_session
-from app.schemas.user import UserPublic, UserSchema, UserUpdate, UserList, FilterPage
-from app.services.user_service import create_user_service, update_user_service
 from app.repositories.user_repository import filter_user
+from app.schemas.user import (
+    FilterPage,
+    Message,
+    UserList,
+    UserPublic,
+    UserSchema,
+    UserUpdate,
+)
+from app.services.user_service import (
+    create_user_service,
+    delete_user_service,
+    update_user_service,
+)
 
 router = APIRouter(prefix='/conta', tags=['User'])
 
@@ -17,7 +28,10 @@ def create_user(user: UserSchema, session: Session = Depends(get_session)):
 
 
 @router.get('/', status_code=HTTPStatus.OK, response_model=UserList)
-def read_users(filter_users: FilterPage = Depends(), session: Session = Depends(get_session)):
+def read_users(
+    filter_users: FilterPage = Depends(),
+    session: Session = Depends(get_session),
+):
     users = filter_user(session, filter_users.limit, filter_users.offset)
 
     return {'users': users}
@@ -32,3 +46,6 @@ def update_user(
     return update_user_service(session, user, user_id)
 
 
+@router.delete('/{user_id}', status_code=HTTPStatus.OK, response_model=Message)
+def delete_user(user_id: int, session: Session = Depends(get_session)):
+    return delete_user_service(session, user_id)
