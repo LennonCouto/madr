@@ -52,3 +52,62 @@ def test_create_user_email_already_exists(client, user_in_the_db):
 
     assert response.status_code == HTTPStatus.CONFLICT
     assert response.json() == {'detail': 'Email já existe'}
+
+
+def test_read_users(client):
+    response = client.get('/users/')
+
+    assert response.status_code == HTTPStatus.OK
+
+
+def test_update_user_not_found(client):
+    response = client.patch(
+        '/users/2',
+        json={
+            'email': 'alice@exemple.com',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Usuário não encontrado'}
+
+
+def test_update_user_integrity_error(client, user_in_the_db, user_2_in_the_db):
+    response = client.patch(
+        '/users/2',
+        json={
+            'username': 'alice',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.CONFLICT
+    assert response.json() == {'detail': 'Nome ou Email já existe'}
+
+
+def test_update_success(client, user_in_the_db, user_2_in_the_db):
+    response = client.patch(
+        '/users/2',
+        json={
+            'username': 'Jesse',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.OK
+
+
+def test_delete_user(client, user_in_the_db):
+    response = client.delete(
+        '/users/1',
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json() == {'mensagem': 'Usuário deletado'}
+
+
+def test_delete_user_not_found(client):
+    response = client.delete(
+        '/users/2',
+    )
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.json() == {'detail': 'Usuário não encontrado'}

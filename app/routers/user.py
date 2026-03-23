@@ -19,7 +19,7 @@ from app.services.user_service import (
     update_user_service,
 )
 
-router = APIRouter(prefix='/conta', tags=['User'])
+router = APIRouter(prefix='/users', tags=['User'])
 
 
 @router.post('/', status_code=HTTPStatus.CREATED, response_model=UserPublic)
