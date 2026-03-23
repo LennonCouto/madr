@@ -39,7 +39,8 @@ app/
 ├── models/
 ├── db/
 ├── core/
-└── main.py```
+└── main.py
+```
 
 
 ---
@@ -96,11 +97,6 @@ Fluxo:
 - Pydantic
 - JWT
 
----
-
-## 📦 Gerenciamento de Dependências
-
-Este projeto utiliza Poetry para gerenciamento de dependências e ambiente virtual.
 
 ---
 
@@ -117,4 +113,10 @@ cd madr-api
 poetry install
 
 # Rode o projeto
-poetry run uvicorn app.main:app --reload```
+poetry run uvicorn app.main:app --reload
+```
+
+
+## 📦 Gerenciamento de Dependências
+
+Este projeto utiliza Poetry para gerenciamento de dependências e ambiente virtual.
