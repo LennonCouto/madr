@@ -42,9 +42,7 @@ def session():
 @pytest.fixture
 def user_in_the_db(session):
     user = User(
-        username='alice',
-        email='alice@example.com',
-        password='password123'
+        username='alice', email='alice@example.com', password='password123'
     )
     session.add(user)
     session.commit()
@@ -56,9 +54,7 @@ def user_in_the_db(session):
 @pytest.fixture
 def user_2_in_the_db(session):
     user = User(
-        username='bob',
-        email='bob@example.com',
-        password='password123'
+        username='bob', email='bob@example.com', password='password123'
     )
     session.add(user)
     session.commit()

@@ -3,6 +3,7 @@ from http import HTTPStatus
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 
+from app.core import security
 from app.models import User
 from app.repositories import user_repository
 
@@ -24,10 +25,12 @@ def create_user_service(session, user_schema):
                 status_code=HTTPStatus.CONFLICT, detail='Email já existe'
             )
 
+    hashed_password = security.get_password_hash(user_schema.password)
+
     user = User(
         username=user_schema.username,
         email=user_schema.email,
-        password=user_schema.password,
+        password=hashed_password,
     )
 
     user_repository.save(session, user)
@@ -47,8 +50,11 @@ def update_user_service(session, user_schema, user_id: int):
 
     update_data = user_schema.model_dump(exclude_unset=True)
 
-    for field, value in update_data.items():
-        setattr(user, field, value)
+    for key, value in update_data.items():
+        processed_value = value
+        if key == 'password':
+            processed_value = security.get_password_hash(value)
+        setattr(user, key, processed_value)
 
     try:
         session.add(user)
