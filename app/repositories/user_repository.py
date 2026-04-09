@@ -26,3 +26,13 @@ def filter_user(session: Session, limit: int, offset: int):
     users = session.scalars(select(User).limit(limit).offset(offset)).all()
 
     return users
+
+
+def get_user_by_identifier(session: Session, identifier: str):
+    stmt = session.scalar(
+        select(User).where(
+            (User.username == identifier) | (User.email == identifier)
+        )
+    )
+
+    return stmt
