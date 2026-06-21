@@ -54,17 +54,20 @@ def test_create_user_email_already_exists(client, user_in_the_db):
     assert response.json() == {'detail': 'Email já existe'}
 
 
-def test_read_users(client):
-    response = client.get('/users/')
+def test_read_users(client, user_in_the_db, token):
+    response = client.get(
+        '/users/', headers={'Authorization': f'Bearer {token}'}
+    )
 
     assert response.status_code == HTTPStatus.OK
 
 
-def test_update_user_not_found(client):
+def test_update_user_not_found(client, token):
     response = client.patch(
         '/users/2',
+        headers={'Authorization': f'Bearer {token}'},
         json={
-            'email': 'alice@exemple.com',
+            'email': 'alicee@exemple.com',
         },
     )
 
@@ -72,9 +75,12 @@ def test_update_user_not_found(client):
     assert response.json() == {'detail': 'Usuário não encontrado'}
 
 
-def test_update_user_integrity_error(client, user_in_the_db, user_2_in_the_db):
+def test_update_user_integrity_error(
+    client, token, user_in_the_db, user_2_in_the_db
+):
     response = client.patch(
         '/users/2',
+        headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'alice',
         },
@@ -84,9 +90,10 @@ def test_update_user_integrity_error(client, user_in_the_db, user_2_in_the_db):
     assert response.json() == {'detail': 'Nome ou Email já existe'}
 
 
-def test_update_success(client, user_in_the_db, user_2_in_the_db):
+def test_update_success(client, token, user_in_the_db, user_2_in_the_db):
     response = client.patch(
         '/users/2',
+        headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'Jesse',
         },

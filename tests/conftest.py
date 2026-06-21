@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
+from app.core.security import get_password_hash
 from app.db.registry import table_registry
 from app.db.session import get_session
 from app.main import app
@@ -40,14 +41,33 @@ def session():
 
 
 @pytest.fixture
-def user_in_the_db(session):
-    user = User(
-        username='alice', email='alice@example.com', password='password123'
+def token(client, user_in_the_db):
+    response = client.post(
+        '/login',
+        data={
+            'username': user_in_the_db.email,
+            'password': user_in_the_db.clean_password,
+        },
     )
+
+    return response.json()['access_token']
+
+
+@pytest.fixture
+def user_in_the_db(session):
+    password = 'password123'
+
+    user = User(
+        username='alice',
+        email='alice@example.com',
+        password=get_password_hash(password),
+    )
+
     session.add(user)
     session.commit()
     session.refresh(user)
 
+    user.clean_password = password
     return user
 
 

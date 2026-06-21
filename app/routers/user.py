@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.db.session import get_session
+from app.dependencies.auth import get_current_user
 from app.repositories.user_repository import filter_user
 from app.schemas.user import (
     FilterPage,
@@ -31,6 +32,7 @@ def create_user(user: UserSchema, session: Session = Depends(get_session)):
 def read_users(
     filter_users: FilterPage = Depends(),
     session: Session = Depends(get_session),
+    current_user=Depends(get_current_user),
 ):
     users = filter_user(session, filter_users.limit, filter_users.offset)
 
@@ -41,8 +43,12 @@ def read_users(
     '/{user_id}', status_code=HTTPStatus.OK, response_model=UserPublic
 )
 def update_user(
-    user_id: int, user: UserUpdate, session: Session = Depends(get_session)
+    user_id: int,
+    user: UserUpdate,
+    session: Session = Depends(get_session),
+    current_user=Depends(get_current_user),
 ):
+
     return update_user_service(session, user, user_id)
 
 
