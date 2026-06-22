@@ -58,7 +58,7 @@ def user_in_the_db(session):
     password = 'password123'
 
     user = User(
-        username='alice',
+        username='Alice',
         email='alice@example.com',
         password=get_password_hash(password),
     )

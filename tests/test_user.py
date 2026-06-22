@@ -75,14 +75,13 @@ def test_update_user_not_found(client, token):
     assert response.json() == {'detail': 'Usuário não encontrado'}
 
 
-def test_update_user_integrity_error(
-    client, token, user_in_the_db, user_2_in_the_db
-):
+def test_update_user_integrity_error(client, token, user_in_the_db,):
     response = client.patch(
-        '/users/2',
+        '/users/{user_in_the_db.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
-            'username': 'alice',
+            'username': 'Alice',
+            'email': 'bob@example.com',
         },
     )
 

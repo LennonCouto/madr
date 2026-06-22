@@ -40,12 +40,17 @@ def create_user_service(session, user_schema):
     return user
 
 
-def update_user_service(session, user_schema, user_id: int):
+def update_user_service(session, current_user, user_schema, user_id: int):
     user = user_repository.get_by_id(session, user_id)
 
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail='Usuário não encontrado'
+        )
+
+    if current_user.id != user_id:
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN, detail='Sem permição suficiente'
         )
 
     update_data = user_schema.model_dump(exclude_unset=True)
@@ -69,12 +74,17 @@ def update_user_service(session, user_schema, user_id: int):
         )
 
 
-def delete_user_service(session, user_id: int):
+def delete_user_service(session, current_user, user_id: int):
     user = user_repository.get_by_id(session, user_id)
 
     if not user:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail='Usuário não encontrado'
+        )
+
+    if current_user.id != user_id:
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN, detail='Sem permição suficiente'
         )
 
     session.delete(user)
