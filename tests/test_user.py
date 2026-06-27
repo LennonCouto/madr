@@ -75,9 +75,14 @@ def test_update_user_not_found(client, token):
     assert response.json() == {'detail': 'Usuário não encontrado'}
 
 
-def test_update_user_integrity_error(client, token, user_in_the_db,):
+def test_update_user_integrity_error(
+    client,
+    token,
+    user_in_the_db,
+    user_2_in_the_db
+):
     response = client.patch(
-        '/users/{user_in_the_db.id}',
+        f'/users/{user_in_the_db.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'Alice',
@@ -91,7 +96,7 @@ def test_update_user_integrity_error(client, token, user_in_the_db,):
 
 def test_update_success(client, token, user_in_the_db, user_2_in_the_db):
     response = client.patch(
-        '/users/2',
+        f'/users/{user_in_the_db.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'Jesse',
@@ -101,18 +106,20 @@ def test_update_success(client, token, user_in_the_db, user_2_in_the_db):
     assert response.status_code == HTTPStatus.OK
 
 
-def test_delete_user(client, user_in_the_db):
+def test_delete_user(client, token, user_in_the_db):
     response = client.delete(
-        '/users/1',
+        f'/users/{user_in_the_db.id}',
+        headers={'Authorization': f'Bearer {token}'},
     )
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'mensagem': 'Usuário deletado'}
 
 
-def test_delete_user_not_found(client):
+def test_delete_user_not_found(client, token, user_in_the_db):
     response = client.delete(
         '/users/2',
+        headers={'Authorization': f'Bearer {token}'},
     )
 
     assert response.status_code == HTTPStatus.NOT_FOUND
