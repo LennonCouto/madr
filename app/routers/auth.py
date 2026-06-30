@@ -6,7 +6,7 @@ from app.db.session import get_session
 from app.schemas.token import Token
 from app.services.auth_service import authenticate_user
 
-router = APIRouter()
+router = APIRouter(tags=['Token'])
 
 
 @router.post('/login', response_model=Token)

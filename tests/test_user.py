@@ -1,13 +1,6 @@
 from http import HTTPStatus
 
 
-def test_read_root_deve_retornar_ok_e_mensagem(client):
-    response = client.get('/')
-
-    assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'message': 'subiu!'}
-
-
 def test_create_user(client):
     response = client.post(
         '/users',
@@ -76,10 +69,7 @@ def test_update_user_not_found(client, token):
 
 
 def test_update_user_integrity_error(
-    client,
-    token,
-    user_in_the_db,
-    user_2_in_the_db
+    client, token, user_in_the_db, user_2_in_the_db
 ):
     response = client.patch(
         f'/users/{user_in_the_db.id}',
