@@ -9,6 +9,7 @@ from app.db.registry import table_registry
 from app.db.session import get_session
 from app.main import app
 from app.models import User
+from app.models.book import Book
 
 
 @pytest.fixture
@@ -81,3 +82,17 @@ def user_2_in_the_db(session):
     session.refresh(user)
 
     return user
+
+
+@pytest.fixture
+def book_in_the_db(session):
+    book = Book(
+        year='1992',
+        title='Café da manha de campeões',
+    )
+
+    session.add(book)
+    session.commit()
+    session.refresh(book)
+
+    return book

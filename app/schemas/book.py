@@ -8,3 +8,8 @@ class BookSchema(BaseModel):
 
 class BookPublic(BookSchema):
     id: int
+
+
+class BookUpdate(BaseModel):
+    title: str | None = None
+    year: str | None = None

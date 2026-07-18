@@ -10,7 +10,10 @@ def save(session: Session, book: Book):
 
 
 def get_by_title(session: Session, title: str):
-    stmt = session.scalar(
-        select(Book).where(Book.title == title)
-    )
+    stmt = session.scalar(select(Book).where(Book.title == title))
+    return stmt
+
+
+def get_by_id_book(session: Session, id_book: int):
+    stmt = session.scalar(select(Book).where(Book.id == id_book))
     return stmt
