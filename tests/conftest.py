@@ -87,8 +87,22 @@ def user_2_in_the_db(session):
 @pytest.fixture
 def book_in_the_db(session):
     book = Book(
-        year='1992',
-        title='Café da manha de campeões',
+        year='1973',
+        title='Café da manha dos campeões',
+    )
+
+    session.add(book)
+    session.commit()
+    session.refresh(book)
+
+    return book
+
+
+@pytest.fixture
+def book_2_in_the_db(session):
+    book = Book(
+        year='1993',
+        title='O ladrão de casaca',
     )
 
     session.add(book)
