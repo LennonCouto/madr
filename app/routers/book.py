@@ -25,7 +25,9 @@ def read_books_with_id(session: Session = Depends(get_session), book_id=int):
 
 
 @router.patch(
-    '/{book_id}', status_code=HTTPStatus.OK, response_model=BookPublic,
+    '/{book_id}',
+    status_code=HTTPStatus.OK,
+    response_model=BookPublic,
 )
 def update_book(
     book_id: int,
