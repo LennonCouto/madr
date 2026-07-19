@@ -12,10 +12,10 @@ from app.schemas.author import (
 )
 from app.services.author_service import (
     create_author_service,
+    delete_author_with_id,
     get_id_author_service,
     get_name_author_service,
     update_name_author,
-    delete_author_with_id
 )
 
 router = APIRouter(prefix='/author', tags=['Author'])

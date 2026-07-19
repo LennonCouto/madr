@@ -91,4 +91,4 @@ def delete_author_with_id(session, id_author):
     session.delete(author_in_the_db)
     session.commit()
 
-    return {'message': 'Author deletado do MARD'}
+    return {'mensagem': 'Author deletado do MARD'}

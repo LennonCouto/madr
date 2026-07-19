@@ -13,3 +13,7 @@ class BookPublic(BookSchema):
 class BookUpdate(BaseModel):
     title: str | None = None
     year: str | None = None
+
+
+class Message(BaseModel):
+    mensagem: str

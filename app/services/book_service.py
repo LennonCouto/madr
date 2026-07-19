@@ -67,3 +67,17 @@ def update_book_service(session, book_schema, book_id: int):
         raise HTTPException(
             status_code=HTTPStatus.CONFLICT, detail='Esse titulo já existe'
         )
+
+
+def delete_book_with_id_service(session, id_book: int):
+    db_book = get_by_id_book(session, id_book)
+
+    if not db_book:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND, detail='Livro não encontrado'
+        )
+
+    session.delete(db_book)
+    session.commit()
+
+    return {'mensagem': 'Livro excluido da MADR'}
