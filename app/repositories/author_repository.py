@@ -4,12 +4,12 @@ from sqlalchemy.orm import Session
 from app.models.author import Author
 
 
-def get_by_id_author(session: Session, id_author: int):
-    stmt = session.scalar(select(Author).where(Author.id == id_author))
+def get_by_id_author(session: Session, author_id: int):
+    stmt = session.scalar(select(Author).where(Author.id == author_id))
     return stmt
 
 
-def get_by_author(session: Session, name_author: str):
+def get_by_name_author(session: Session, name_author: str):
     stmt = session.scalar(select(Author).where(Author.name == name_author))
     return stmt
 

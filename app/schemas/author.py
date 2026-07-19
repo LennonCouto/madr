@@ -11,3 +11,7 @@ class AuthorPublic(AuthorSchema):
 
 class AuthorUpdate(BaseModel):
     name: str | None = None
+
+
+class Message(BaseModel):
+    mensagem: str
