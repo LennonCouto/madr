@@ -76,7 +76,7 @@ def test_update_book_integrity_error(client, book_in_the_db, book_2_in_the_db):
     assert response.json() == {'detail': 'Esse titulo já existe'}
 
 
-def test_delete_book(client, book_in_the_db):
+def test_delete_book_success(client, book_in_the_db):
     response = client.delete('/book/1')
 
     assert response.status_code == HTTPStatus.OK

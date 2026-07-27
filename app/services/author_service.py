@@ -85,10 +85,10 @@ def delete_author_with_id(session, id_author):
     if not author_in_the_db:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,
-            detail='ID não consta no MADR',
+            detail='Author não consta no MADR',
         )
 
     session.delete(author_in_the_db)
     session.commit()
 
-    return {'mensagem': 'Author deletado do MARD'}
+    return {'mensagem': 'Author deletado do MADR'}

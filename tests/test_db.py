@@ -1,6 +1,7 @@
 from sqlalchemy import select
 
 from app.models import User
+from app.models.author import Author
 from app.models.book import Book
 
 
@@ -28,3 +29,18 @@ def test_create_book_db(session):
     )
 
     assert book.title == 'cafe da manha dos campeões'
+
+
+def test_create_author_db(session):
+    new_author = Author(
+        name='Kurt Vonnegut',
+    )
+
+    session.add(new_author)
+    session.commit()
+
+    author = session.scalar(
+        select(Author).where(Author.name == 'Kurt Vonnegut')
+    )
+
+    assert author.name == 'Kurt Vonnegut'

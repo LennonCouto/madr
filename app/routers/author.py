@@ -40,7 +40,9 @@ def get_name_author(author_name: str, session: Session = Depends(get_session)):
     return get_name_author_service(session, author_name)
 
 
-@router.patch('/', status_code=HTTPStatus.OK, response_model=AuthorPublic)
+@router.patch(
+    '/{id_author}', status_code=HTTPStatus.OK, response_model=AuthorPublic
+)
 def update_author(
     id_author: int,
     author: AuthorUpdate,
@@ -49,6 +51,8 @@ def update_author(
     return update_name_author(session, author, id_author)
 
 
-@router.delete('/', status_code=HTTPStatus.OK, response_model=Message)
+@router.delete(
+    '/{id_author}', status_code=HTTPStatus.OK, response_model=Message
+)
 def delete_author(id_author: int, session: Session = Depends(get_session)):
     return delete_author_with_id(session, id_author)
