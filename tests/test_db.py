@@ -16,11 +16,15 @@ def test_create_user_db(session):
 
 
 def test_create_book_db(session):
-    new_book = Book(year='1992', title='Noite feliz')
+    new_book = Book(
+        year='1992', title='cafe da manha dos campeões', author_id=1
+    )
 
     session.add(new_book)
     session.commit()
 
-    book = session.scalar(select(Book).where(Book.title == 'Noite feliz'))
+    book = session.scalar(
+        select(Book).where(Book.title == 'cafe da manha dos campeões')
+    )
 
-    assert book.title == 'Noite feliz'
+    assert book.title == 'cafe da manha dos campeões'

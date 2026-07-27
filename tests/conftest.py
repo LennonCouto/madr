@@ -9,6 +9,7 @@ from app.db.registry import table_registry
 from app.db.session import get_session
 from app.main import app
 from app.models import User
+from app.models.author import Author
 from app.models.book import Book
 
 
@@ -85,10 +86,11 @@ def user_2_in_the_db(session):
 
 
 @pytest.fixture
-def book_in_the_db(session):
+def book_in_the_db(session, author_in_the_db):
     book = Book(
         year='1973',
         title='Café da manha dos campeões',
+        author_id=author_in_the_db.id,
     )
 
     session.add(book)
@@ -99,10 +101,11 @@ def book_in_the_db(session):
 
 
 @pytest.fixture
-def book_2_in_the_db(session):
+def book_2_in_the_db(session, author_2_in_the_db):
     book = Book(
         year='1993',
         title='O ladrão de casaca',
+        author_id=author_2_in_the_db.id,
     )
 
     session.add(book)
@@ -110,3 +113,25 @@ def book_2_in_the_db(session):
     session.refresh(book)
 
     return book
+
+
+@pytest.fixture
+def author_in_the_db(session):
+    author = Author(name='Kurt Vonnegut')
+
+    session.add(author)
+    session.commit()
+    session.refresh(author)
+
+    return author
+
+
+@pytest.fixture
+def author_2_in_the_db(session):
+    author = Author(name='Maurice Leblanc')
+
+    session.add(author)
+    session.commit()
+    session.refresh(author)
+
+    return author

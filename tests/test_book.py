@@ -1,12 +1,13 @@
 from http import HTTPStatus
 
 
-def test_create_book(client):
+def test_create_book(client, author_in_the_db):
     response = client.post(
         '/book/',
         json={
             'year': '1973',
             'title': 'Café da manha dos campeões',
+            'author_id': author_in_the_db.id,
         },
     )
 
@@ -14,16 +15,18 @@ def test_create_book(client):
     assert response.json() == {
         'year': '1973',
         'title': 'Café da manha dos campeões',
+        'author_id': author_in_the_db.id,
         'id': 1,
     }
 
 
-def test_create_conflict(client, book_in_the_db):
+def test_create_conflict(client, book_in_the_db, author_in_the_db):
     response = client.post(
         '/book/',
         json={
             'year': '1973',
             'title': 'Café da manha dos campeões',
+            'author_id': author_in_the_db.id,
         },
     )
 
