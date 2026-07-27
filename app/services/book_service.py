@@ -24,6 +24,7 @@ def create_book_service(session, book_schema):
     book = Book(
         year=book_schema.year,
         title=book_schema.title,
+        author_id=book_schema.author_id
     )
 
     save(session, book)
