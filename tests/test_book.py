@@ -6,7 +6,7 @@ def test_create_book(client, author_in_the_db):
         '/book/',
         json={
             'year': '1973',
-            'title': 'Café da manha dos campeões',
+            'title': 'Café Da Manha Dos Campeões',
             'author_id': author_in_the_db.id,
         },
     )
@@ -14,7 +14,7 @@ def test_create_book(client, author_in_the_db):
     assert response.status_code == HTTPStatus.CREATED
     assert response.json() == {
         'year': '1973',
-        'title': 'Café da manha dos campeões',
+        'title': 'Café Da Manha Dos Campeões',
         'author_id': author_in_the_db.id,
         'id': 1,
     }
@@ -25,7 +25,7 @@ def test_create_conflict(client, book_in_the_db, author_in_the_db):
         '/book/',
         json={
             'year': '1973',
-            'title': 'Café da manha dos campeões',
+            'title': 'Café Da Manha Dos Campeões',
             'author_id': author_in_the_db.id,
         },
     )

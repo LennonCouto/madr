@@ -3,6 +3,7 @@ from http import HTTPStatus
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 
+from app.core.sanitizers import sanitize_name
 from app.models.author import Author
 from app.repositories.author_repository import (
     get_by_id_author,
@@ -21,7 +22,7 @@ def create_author_service(session, author_schema):
                 detail='Author já consta no MADR',
             )
 
-    author = Author(name=author_schema.name)
+    author = Author(name=sanitize_name(author_schema.name))
 
     save(session, author)
     session.commit()
@@ -64,7 +65,10 @@ def update_name_author(session, author_schema, id_author):
         )
 
     for key, value in author_schema.model_dump(exclude_unset=True).items():
-        setattr(author_in_the_db, key, value)
+        processed_value = value
+        if key == 'name':
+            processed_value = sanitize_name(processed_value)
+        setattr(author_in_the_db, key, processed_value)
 
     try:
         session.add(author_in_the_db)

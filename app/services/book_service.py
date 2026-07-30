@@ -3,6 +3,7 @@ from http import HTTPStatus
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 
+from app.core.sanitizers import sanitize_name
 from app.models.book import Book
 from app.repositories.book_repository import (
     get_by_id_book,
@@ -23,7 +24,7 @@ def create_book_service(session, book_schema):
 
     book = Book(
         year=book_schema.year,
-        title=book_schema.title,
+        title=sanitize_name(book_schema.title),
         author_id=book_schema.author_id,
     )
 
@@ -55,7 +56,10 @@ def update_book_service(session, book_schema, book_id: int):
         )
 
     for key, value in book_schema.model_dump(exclude_unset=True).items():
-        setattr(db_book, key, value)
+        processed_value = value
+        if key == 'title':
+            processed_value = sanitize_name(value)
+        setattr(db_book, key, processed_value)
 
     try:
         session.add(db_book)

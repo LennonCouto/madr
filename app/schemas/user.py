@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr, Field
 
 
 class UserSchema(BaseModel):
-    username: str
+    username: str = Field(min_length=2, max_length=80)
     email: EmailStr
     password: str
 
@@ -23,7 +23,7 @@ class FilterPage(BaseModel):
 
 
 class UserUpdate(BaseModel):
-    username: str | None = None
+    username: str | None = Field(default=None, min_length=2, max_length=80)
     email: EmailStr | None = None
     password: str | None = None
 

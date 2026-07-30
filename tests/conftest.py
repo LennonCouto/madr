@@ -89,7 +89,7 @@ def user_2_in_the_db(session):
 def book_in_the_db(session, author_in_the_db):
     book = Book(
         year='1973',
-        title='Café da manha dos campeões',
+        title='Café Da Manha Dos Campeões',
         author_id=author_in_the_db.id,
     )
 
@@ -104,7 +104,7 @@ def book_in_the_db(session, author_in_the_db):
 def book_2_in_the_db(session, author_2_in_the_db):
     book = Book(
         year='1993',
-        title='O ladrão de casaca',
+        title='O Ladrão De Casaca',
         author_id=author_2_in_the_db.id,
     )
 

@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError
 
 from app.core import security
+from app.core.sanitizers import sanitize_name
 from app.models import User
 from app.repositories import user_repository
 
@@ -28,7 +29,7 @@ def create_user_service(session, user_schema):
     hashed_password = security.get_password_hash(user_schema.password)
 
     user = User(
-        username=user_schema.username,
+        username=sanitize_name(user_schema.username),
         email=user_schema.email,
         password=hashed_password,
     )
@@ -59,6 +60,8 @@ def update_user_service(session, current_user, user_schema, user_id: int):
         processed_value = value
         if key == 'password':
             processed_value = security.get_password_hash(value)
+        if key == 'username':
+            processed_value = sanitize_name(value)
         setattr(user, key, processed_value)
 
     try:
