@@ -17,3 +17,23 @@ def get_by_title(session: Session, title: str):
 def get_by_id_book(session: Session, id_book: int):
     stmt = session.scalar(select(Book).where(Book.id == id_book))
     return stmt
+
+
+def get_filter_book(
+    session: Session,
+    title: str | None,
+    year: str | None,
+    offset: int,
+    limit: int
+):
+    query = select(Book)
+
+    if title:
+        query = query.filter(Book.title.contains(title))
+
+    if year:
+        query = query.filter(Book.year.contains(year))
+
+    books = session.scalars(query.offset(offset).limit(limit))
+
+    return {'books': books.all()}
