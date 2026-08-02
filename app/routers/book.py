@@ -5,10 +5,11 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.db.session import get_session
+from app.repositories.book_repository import get_filter_book
 from app.schemas.book import (
     BookCreate,
-    BookPublic,
     BookList,
+    BookPublic,
     BookUpdate,
     Filter,
     Message,
@@ -19,9 +20,6 @@ from app.services.book_service import (
     read_books,
     update_book_service,
 )
-
-from app.repositories.book_repository import get_filter_book
-
 
 router = APIRouter(prefix='/book', tags=['Book'])
 
@@ -37,8 +35,11 @@ def read_books_with_filter(
     session: Session = Depends(get_session),
 ):
     return get_filter_book(
-        session, book_filter.title,
-        book_filter.year, book_filter.offset, book_filter.limit
+        session,
+        book_filter.title,
+        book_filter.year,
+        book_filter.offset,
+        book_filter.limit,
     )
 
 

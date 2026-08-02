@@ -43,18 +43,6 @@ def get_id_author_service(session, name_author):
     return author_in_the_db
 
 
-def get_name_author_service(session, name_author):
-    author_in_the_db = get_by_name_author(session, name_author)
-
-    if not author_in_the_db:
-        raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail='Author não consta no MADR',
-        )
-
-    return author_in_the_db
-
-
 def update_name_author(session, author_schema, id_author):
     author_in_the_db = get_by_id_author(session, id_author)
 

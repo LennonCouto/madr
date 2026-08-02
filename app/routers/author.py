@@ -1,20 +1,23 @@
 from http import HTTPStatus
+from typing import Annotated
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.db.session import get_session
+from app.repositories.author_repository import get_author_with_filters
 from app.schemas.author import (
     AuthorCreate,
+    AuthorList,
     AuthorPublic,
     AuthorUpdate,
+    Filter,
     Message,
 )
 from app.services.author_service import (
     create_author_service,
     delete_author_with_id,
     get_id_author_service,
-    get_name_author_service,
     update_name_author,
 )
 
@@ -35,9 +38,13 @@ def get_id_author(id_author: int, session: Session = Depends(get_session)):
     return get_id_author_service(session, id_author)
 
 
-@router.get('/', status_code=HTTPStatus.OK, response_model=AuthorPublic)
-def get_name_author(author_name: str, session: Session = Depends(get_session)):
-    return get_name_author_service(session, author_name)
+@router.get('/', response_model=AuthorList)
+def get_authors(
+    filter: Annotated[Filter, Query()], session: Session = Depends(get_session)
+):
+    return get_author_with_filters(
+        session, filter.name, filter.offset, filter.limit
+    )
 
 
 @router.patch(

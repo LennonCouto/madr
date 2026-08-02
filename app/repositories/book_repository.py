@@ -24,7 +24,7 @@ def get_filter_book(
     title: str | None,
     year: str | None,
     offset: int,
-    limit: int
+    limit: int,
 ):
     query = select(Book)
 
