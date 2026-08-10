@@ -1,7 +1,8 @@
 from http import HTTPStatus
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_session
 from app.dependencies.auth import get_current_user
@@ -25,17 +26,19 @@ router = APIRouter(prefix='/users', tags=['User'])
 
 
 @router.post('/', status_code=HTTPStatus.CREATED, response_model=UserPublic)
-def create_user(user: UserSchema, session: Session = Depends(get_session)):
-    return create_user_service(session, user)
+async def create_user(
+    user: UserSchema, session: AsyncSession = Depends(get_session)
+):
+    return await create_user_service(session, user)
 
 
 @router.get('/', status_code=HTTPStatus.OK, response_model=UserList)
-def read_users(
-    filter_users: FilterPage = Depends(),
-    session: Session = Depends(get_session),
+async def read_users(
+    filter_users: Annotated[FilterPage, Depends()],
+    session: Annotated[AsyncSession, Depends(get_session)],
     current_user: User = Depends(get_current_user),
 ):
-    users = filter_user(session, filter_users.limit, filter_users.offset)
+    users = await filter_user(session, filter_users.limit, filter_users.offset)
 
     return {'users': users}
 
@@ -43,20 +46,20 @@ def read_users(
 @router.patch(
     '/{user_id}', status_code=HTTPStatus.OK, response_model=UserPublic
 )
-def update_user(
+async def update_user(
     user_id: int,
     user: UserUpdate,
-    session: Session = Depends(get_session),
+    session: Annotated[AsyncSession, Depends(get_session)],
     current_user: User = Depends(get_current_user),
 ):
 
-    return update_user_service(session, current_user, user, user_id)
+    return await update_user_service(session, current_user, user, user_id)
 
 
 @router.delete('/{user_id}', status_code=HTTPStatus.OK, response_model=Message)
-def delete_user(
+async def delete_user(
     user_id: int,
-    session: Session = Depends(get_session),
+    session: AsyncSession = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
-    return delete_user_service(session, current_user, user_id)
+    return await delete_user_service(session, current_user, user_id)

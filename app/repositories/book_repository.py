@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.models.book import Book
@@ -9,13 +10,13 @@ def save(session: Session, book: Book):
     return book
 
 
-def get_by_title(session: Session, title: str):
-    stmt = session.scalar(select(Book).where(Book.title == title))
+async def get_by_title(session: AsyncSession, title: str):
+    stmt = await session.scalar(select(Book).where(Book.title == title))
     return stmt
 
 
-def get_by_id_book(session: Session, id_book: int):
-    stmt = session.scalar(select(Book).where(Book.id == id_book))
+async def get_by_id_book(session: AsyncSession, id_book: int):
+    stmt = await session.scalar(select(Book).where(Book.id == id_book))
     return stmt
 
 

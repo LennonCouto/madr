@@ -12,8 +12,8 @@ from app.repositories.book_repository import (
 )
 
 
-def create_book_service(session, book_schema):
-    db_book = get_by_title(session, book_schema.title)
+async def create_book_service(session, book_schema):
+    db_book = await get_by_title(session, book_schema.title)
 
     if db_book:
         if db_book.title == book_schema.title:
@@ -29,14 +29,14 @@ def create_book_service(session, book_schema):
     )
 
     save(session, book)
-    session.commit()
-    session.refresh(book)
+    await session.commit()
+    await session.refresh(book)
 
     return book
 
 
-def read_books(session, book_id):
-    book_in_the_db = get_by_id_book(session, book_id)
+async def read_books(session, book_id):
+    book_in_the_db = await get_by_id_book(session, book_id)
 
     if not book_in_the_db:
         raise HTTPException(
@@ -47,8 +47,8 @@ def read_books(session, book_id):
     return book_in_the_db
 
 
-def update_book_service(session, book_schema, book_id: int):
-    db_book = get_by_id_book(session, book_id)
+async def update_book_service(session, book_schema, book_id: int):
+    db_book = await get_by_id_book(session, book_id)
 
     if not db_book:
         raise HTTPException(
@@ -63,26 +63,26 @@ def update_book_service(session, book_schema, book_id: int):
 
     try:
         session.add(db_book)
-        session.commit()
-        session.refresh(db_book)
+        await session.commit()
+        await session.refresh(db_book)
         return db_book
 
     except IntegrityError:
-        session.rollback()
+        await session.rollback()
         raise HTTPException(
             status_code=HTTPStatus.CONFLICT, detail='Esse titulo já existe'
         )
 
 
-def delete_book_with_id_service(session, id_book: int):
-    db_book = get_by_id_book(session, id_book)
+async def delete_book_with_id_service(session, id_book: int):
+    db_book = await get_by_id_book(session, id_book)
 
     if not db_book:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND, detail='Livro não encontrado'
         )
 
-    session.delete(db_book)
-    session.commit()
+    await session.delete(db_book)
+    await session.commit()
 
     return {'mensagem': 'Livro excluido da MADR'}

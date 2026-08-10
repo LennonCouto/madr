@@ -81,8 +81,8 @@ def test_delete_author_success(client, author_in_the_db):
     assert response.json() == {'mensagem': 'Author deletado do MADR'}
 
 
-def test_delete_author_not_found(client):
-    response = client.delete('/author/1')
+def test_delete_author_not_found(client, author_in_the_db):
+    response = client.delete('/author/3')
 
     assert response.status_code == HTTPStatus.NOT_FOUND
     assert response.json() == {'detail': 'Author não consta no MADR'}

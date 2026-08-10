@@ -1,7 +1,7 @@
 import pytest
+import pytest_asyncio
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.pool import StaticPool
 
 from app.core.security import get_password_hash
@@ -25,21 +25,24 @@ def client(session):
     app.dependency_overrides.clear()
 
 
-@pytest.fixture
-def session():
-    engine = create_engine(
-        'sqlite:///:memory:',
+@pytest_asyncio.fixture
+async def session():
+    engine = create_async_engine(
+        'sqlite+aiosqlite:///:memory:',
         connect_args={'check_same_thread': False},
         poolclass=StaticPool,
     )
 
-    table_registry.metadata.create_all(engine)
+    async with engine.begin() as conn:
+        await conn.run_sync(table_registry.metadata.create_all)
 
-    with Session(engine) as session:
+    async with AsyncSession(engine, expire_on_commit=False) as session:
         yield session
 
-    table_registry.metadata.drop_all(engine)
-    engine.dispose()
+    async with engine.begin() as conn:
+        await conn.run_sync(table_registry.metadata.drop_all)
+
+    await engine.dispose()
 
 
 @pytest.fixture
@@ -55,8 +58,8 @@ def token(client, user_in_the_db):
     return response.json()['access_token']
 
 
-@pytest.fixture
-def user_in_the_db(session):
+@pytest_asyncio.fixture
+async def user_in_the_db(session):
     password = 'password123'
 
     user = User(
@@ -66,27 +69,27 @@ def user_in_the_db(session):
     )
 
     session.add(user)
-    session.commit()
-    session.refresh(user)
+    await session.commit()
+    await session.refresh(user)
 
     user.clean_password = password
     return user
 
 
-@pytest.fixture
-def user_2_in_the_db(session):
+@pytest_asyncio.fixture
+async def user_2_in_the_db(session):
     user = User(
         username='bob', email='bob@example.com', password='password123'
     )
     session.add(user)
-    session.commit()
-    session.refresh(user)
+    await session.commit()
+    await session.refresh(user)
 
     return user
 
 
-@pytest.fixture
-def book_in_the_db(session, author_in_the_db):
+@pytest_asyncio.fixture
+async def book_in_the_db(session, author_in_the_db):
     book = Book(
         year='1973',
         title='Café Da Manha Dos Campeões',
@@ -94,14 +97,14 @@ def book_in_the_db(session, author_in_the_db):
     )
 
     session.add(book)
-    session.commit()
-    session.refresh(book)
+    await session.commit()
+    await session.refresh(book)
 
     return book
 
 
-@pytest.fixture
-def book_2_in_the_db(session, author_2_in_the_db):
+@pytest_asyncio.fixture
+async def book_2_in_the_db(session, author_2_in_the_db):
     book = Book(
         year='1993',
         title='O Ladrão De Casaca',
@@ -109,29 +112,29 @@ def book_2_in_the_db(session, author_2_in_the_db):
     )
 
     session.add(book)
-    session.commit()
-    session.refresh(book)
+    await session.commit()
+    await session.refresh(book)
 
     return book
 
 
-@pytest.fixture
-def author_in_the_db(session):
+@pytest_asyncio.fixture
+async def author_in_the_db(session):
     author = Author(name='Kurt Vonnegut')
 
     session.add(author)
-    session.commit()
-    session.refresh(author)
+    await session.commit()
+    await session.refresh(author)
 
     return author
 
 
-@pytest.fixture
-def author_2_in_the_db(session):
+@pytest_asyncio.fixture
+async def author_2_in_the_db(session: AsyncSession):
     author = Author(name='Maurice Leblanc')
 
     session.add(author)
-    session.commit()
-    session.refresh(author)
+    await session.commit()
+    await session.refresh(author)
 
     return author

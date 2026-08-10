@@ -12,8 +12,8 @@ from app.repositories.author_repository import (
 )
 
 
-def create_author_service(session, author_schema):
-    author_db = get_by_name_author(session, author_schema.name)
+async def create_author_service(session, author_schema):
+    author_db = await get_by_name_author(session, author_schema.name)
 
     if author_db:
         if author_db.name == author_schema.name:
@@ -25,14 +25,14 @@ def create_author_service(session, author_schema):
     author = Author(name=sanitize_name(author_schema.name))
 
     save(session, author)
-    session.commit()
-    session.refresh(author)
+    await session.commit()
+    await session.refresh(author)
 
     return author
 
 
-def get_id_author_service(session, name_author):
-    author_in_the_db = get_by_id_author(session, name_author)
+async def get_id_author_service(session, name_author):
+    author_in_the_db = await get_by_id_author(session, name_author)
 
     if not author_in_the_db:
         raise HTTPException(
@@ -43,8 +43,8 @@ def get_id_author_service(session, name_author):
     return author_in_the_db
 
 
-def update_name_author(session, author_schema, id_author):
-    author_in_the_db = get_by_id_author(session, id_author)
+async def update_name_author(session, author_schema, id_author):
+    author_in_the_db = await get_by_id_author(session, id_author)
 
     if not author_in_the_db:
         raise HTTPException(
@@ -60,19 +60,19 @@ def update_name_author(session, author_schema, id_author):
 
     try:
         session.add(author_in_the_db)
-        session.commit()
-        session.refresh(author_in_the_db)
+        await session.commit()
+        await session.refresh(author_in_the_db)
         return author_in_the_db
 
     except IntegrityError:
-        session.rollback()
+        await session.rollback()
         raise HTTPException(
             status_code=HTTPStatus.CONFLICT, detail='Author já consta no MADR'
         )
 
 
-def delete_author_with_id(session, id_author):
-    author_in_the_db = get_by_id_author(session, id_author)
+async def delete_author_with_id(session, id_author):
+    author_in_the_db = await get_by_id_author(session, id_author)
 
     if not author_in_the_db:
         raise HTTPException(
@@ -80,7 +80,7 @@ def delete_author_with_id(session, id_author):
             detail='Author não consta no MADR',
         )
 
-    session.delete(author_in_the_db)
-    session.commit()
+    await session.delete(author_in_the_db)
+    await session.commit()
 
     return {'mensagem': 'Author deletado do MADR'}

@@ -6,8 +6,10 @@ from app.core.security import create_access_token, verify_password
 from app.repositories import user_repository
 
 
-def authenticate_user(session, user_identifier: str, password: str):
-    user = user_repository.get_user_by_identifier(session, user_identifier)
+async def authenticate_user(session, user_identifier: str, password: str):
+    user = await user_repository.get_user_by_identifier(
+        session, user_identifier
+    )
 
     if not user:
         raise HTTPException(

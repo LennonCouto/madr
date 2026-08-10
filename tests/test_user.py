@@ -108,7 +108,7 @@ def test_delete_user(client, token, user_in_the_db):
 
 def test_delete_user_not_found(client, token, user_in_the_db):
     response = client.delete(
-        '/users/2',
+        '/users/3',
         headers={'Authorization': f'Bearer {token}'},
     )
 

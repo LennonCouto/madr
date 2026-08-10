@@ -1,16 +1,17 @@
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.models.author import Author
 
 
-def get_by_id_author(session: Session, author_id: int):
-    stmt = session.scalar(select(Author).where(Author.id == author_id))
+async def get_by_id_author(session: AsyncSession, author_id: int):
+    stmt = await session.scalar(select(Author).where(Author.id == author_id))
     return stmt
 
 
-def get_by_name_author(session: Session, name: str):
-    return session.scalar(select(Author).where(Author.name == name))
+async def get_by_name_author(session: AsyncSession, name: str):
+    return await session.scalar(select(Author).where(Author.name == name))
 
 
 def get_author_with_filters(

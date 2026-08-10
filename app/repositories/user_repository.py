@@ -1,4 +1,5 @@
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Session
 
 from app.models import User
@@ -9,30 +10,30 @@ def save(session: Session, user: User):
     return user
 
 
-def get_by_username_or_email(session: Session, username: str, email: str):
-    stmt = session.scalar(
+async def get_by_username_or_email(
+    session: AsyncSession, username: str, email: str
+):
+    stmt = await session.scalar(
         select(User).where((User.username == username) | (User.email == email))
     )
 
     return stmt
 
 
-def get_by_id(session: Session, user_id: int):
-    stmt = session.scalar(select(User).where(User.id == user_id))
+async def get_by_id(session: AsyncSession, user_id: int):
+    stmt = await session.scalar(select(User).where(User.id == user_id))
     return stmt
 
 
-def filter_user(session: Session, limit: int, offset: int):
-    users = session.scalars(select(User).limit(limit).offset(offset)).all()
+async def filter_user(session: AsyncSession, limit: int, offset: int):
+    users = await session.scalars(
+        select(User).limit(limit).offset(offset))
 
-    return users
+    return users.all()
 
 
-def get_user_by_identifier(session: Session, identifier: str):
-    stmt = session.scalar(
-        select(User).where(
-            (User.username == identifier) | (User.email == identifier)
-        )
+async def get_user_by_identifier(session: AsyncSession, identifier: str):
+    stmt = select(User).where(
+        (User.username == identifier) | (User.email == identifier)
     )
-
-    return stmt
+    return await session.scalar(stmt)

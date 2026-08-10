@@ -9,8 +9,8 @@ from app.models import User
 from app.repositories import user_repository
 
 
-def create_user_service(session, user_schema):
-    db_user = user_repository.get_by_username_or_email(
+async def create_user_service(session, user_schema):
+    db_user = await user_repository.get_by_username_or_email(
         session, user_schema.username, user_schema.email
     )
 
@@ -35,14 +35,16 @@ def create_user_service(session, user_schema):
     )
 
     user_repository.save(session, user)
-    session.commit()
-    session.refresh(user)
+    await session.commit()
+    await session.refresh(user)
 
     return user
 
 
-def update_user_service(session, current_user, user_schema, user_id: int):
-    user = user_repository.get_by_id(session, user_id)
+async def update_user_service(
+    session, current_user, user_schema, user_id: int
+):
+    user = await user_repository.get_by_id(session, user_id)
 
     if not user:
         raise HTTPException(
@@ -66,19 +68,19 @@ def update_user_service(session, current_user, user_schema, user_id: int):
 
     try:
         session.add(user)
-        session.commit()
-        session.refresh(user)
+        await session.commit()
+        await session.refresh(user)
         return user
 
     except IntegrityError:
-        session.rollback()
+        await session.rollback()
         raise HTTPException(
             status_code=HTTPStatus.CONFLICT, detail='Nome ou Email já existe'
         )
 
 
-def delete_user_service(session, current_user, user_id: int):
-    user = user_repository.get_by_id(session, user_id)
+async def delete_user_service(session, current_user, user_id: int):
+    user = await user_repository.get_by_id(session, user_id)
 
     if not user:
         raise HTTPException(
@@ -90,7 +92,7 @@ def delete_user_service(session, current_user, user_id: int):
             status_code=HTTPStatus.FORBIDDEN, detail='Sem permição suficiente'
         )
 
-    session.delete(user)
-    session.commit()
+    await session.delete(user)
+    await session.commit()
 
     return {'mensagem': 'Usuário deletado'}
