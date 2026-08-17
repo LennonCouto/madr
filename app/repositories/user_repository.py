@@ -26,8 +26,7 @@ async def get_by_id(session: AsyncSession, user_id: int):
 
 
 async def filter_user(session: AsyncSession, limit: int, offset: int):
-    users = await session.scalars(
-        select(User).limit(limit).offset(offset))
+    users = await session.scalars(select(User).limit(limit).offset(offset))
 
     return users.all()
 

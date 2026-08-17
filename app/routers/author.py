@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_session
+from app.dependencies.auth import get_current_user
+from app.models.user import User
 from app.repositories.author_repository import get_author_with_filters
 from app.schemas.author import (
     AuthorCreate,
@@ -26,7 +28,9 @@ router = APIRouter(prefix='/author', tags=['Author'])
 
 @router.post('/', status_code=HTTPStatus.CREATED, response_model=AuthorPublic)
 async def create_author(
-    author: AuthorCreate, session: AsyncSession = Depends(get_session)
+    author: AuthorCreate,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     return await create_author_service(session, author)
 
@@ -35,7 +39,9 @@ async def create_author(
     '/{id_author}', status_code=HTTPStatus.OK, response_model=AuthorPublic
 )
 async def get_id_author(
-    id_author: int, session: AsyncSession = Depends(get_session)
+    id_author: int,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     return await get_id_author_service(session, id_author)
 
@@ -43,7 +49,8 @@ async def get_id_author(
 @router.get('/', response_model=AuthorList)
 def get_authors(
     filter: Annotated[Filter, Query()],
-    session: AsyncSession = Depends(get_session)
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     return get_author_with_filters(
         session, filter.name, filter.offset, filter.limit
@@ -57,6 +64,7 @@ async def update_author(
     id_author: int,
     author: AuthorUpdate,
     session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     return await update_name_author(session, author, id_author)
 
@@ -65,6 +73,8 @@ async def update_author(
     '/{id_author}', status_code=HTTPStatus.OK, response_model=Message
 )
 async def delete_author(
-    id_author: int, session: AsyncSession = Depends(get_session)
+    id_author: int,
+    session: AsyncSession = Depends(get_session),
+    current_user: User = Depends(get_current_user),
 ):
     return await delete_author_with_id(session, id_author)
