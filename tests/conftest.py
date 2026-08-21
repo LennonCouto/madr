@@ -1,3 +1,4 @@
+import factory
 import pytest
 import pytest_asyncio
 from fastapi.testclient import TestClient
@@ -58,15 +59,19 @@ def token(client, user_in_the_db):
     return response.json()['access_token']
 
 
+class UserFactory(factory.Factory):
+    class Meta:
+        model = User
+
+    username = factory.sequence(lambda n: f'user{n}')
+    email = factory.LazyAttribute(lambda obj: f'{obj.username}@example.com')
+    password = factory.LazyAttribute(lambda obj: f'{obj.username}_password')
+
+
 @pytest_asyncio.fixture
 async def user_in_the_db(session):
     password = 'password123'
-
-    user = User(
-        username='Alice',
-        email='alice@example.com',
-        password=get_password_hash(password),
-    )
+    user = UserFactory(password=get_password_hash(password))
 
     session.add(user)
     await session.commit()
@@ -78,9 +83,8 @@ async def user_in_the_db(session):
 
 @pytest_asyncio.fixture
 async def user_2_in_the_db(session):
-    user = User(
-        username='bob', email='bob@example.com', password='password123'
-    )
+    user = UserFactory(password=get_password_hash('password123'))
+
     session.add(user)
     await session.commit()
     await session.refresh(user)

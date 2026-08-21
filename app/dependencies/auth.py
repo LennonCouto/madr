@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from jwt import DecodeError, decode
+from jwt import DecodeError, ExpiredSignatureError, decode
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import settings
@@ -32,7 +32,11 @@ async def get_current_user(
         subject = payload.get('sub')
         if not subject:
             raise credentials_exception
+
     except DecodeError:
+        raise credentials_exception
+
+    except ExpiredSignatureError:
         raise credentials_exception
 
     user = await get_user_by_identifier(session, subject)

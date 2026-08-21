@@ -75,8 +75,8 @@ def test_update_user_integrity_error(
         f'/users/{user_in_the_db.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
-            'username': 'Alice',
-            'email': 'bob@example.com',
+            'username': user_2_in_the_db.username,
+            'email': user_2_in_the_db.email,
         },
     )
 
@@ -84,7 +84,7 @@ def test_update_user_integrity_error(
     assert response.json() == {'detail': 'Nome ou Email já existe'}
 
 
-def test_update_success(client, token, user_in_the_db, user_2_in_the_db):
+def test_update_success(client, token, user_in_the_db):
     response = client.patch(
         f'/users/{user_in_the_db.id}',
         headers={'Authorization': f'Bearer {token}'},
@@ -96,6 +96,21 @@ def test_update_success(client, token, user_in_the_db, user_2_in_the_db):
     assert response.status_code == HTTPStatus.OK
 
 
+def test_update_user_with_wrong_user(client, user_2_in_the_db, token):
+    response = client.patch(
+        f'/users/{user_2_in_the_db.id}',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'username': 'Jesse',
+            'email': 'jesse@example.com',
+            'password': 'newpassword',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.json() == {'detail': 'Sem permição suficiente'}
+
+
 def test_delete_user(client, token, user_in_the_db):
     response = client.delete(
         f'/users/{user_in_the_db.id}',
@@ -104,6 +119,21 @@ def test_delete_user(client, token, user_in_the_db):
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {'mensagem': 'Usuário deletado'}
+
+
+def tes_delete_user_with_wrong_user(client, user_2_in_the_db, token):
+    response = client.delete(
+        f'/users/{user_2_in_the_db.id}',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'username': 'Jesse',
+            'email': 'jesse@example.com',
+            'password': 'newpassword',
+        },
+    )
+
+    assert response.status_code == HTTPStatus.FORBIDDEN
+    assert response.json() == {'detail': 'Sem permição suficiente'}
 
 
 def test_delete_user_not_found(client, token, user_in_the_db):

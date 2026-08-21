@@ -32,7 +32,8 @@ def test_create_author_conflict(client, author_in_the_db, token):
 
 def test_read_author(client, author_in_the_db, token):
     response = client.get(
-        '/author/1', headers={'Authorization': f'Bearer {token}'},
+        '/author/1',
+        headers={'Authorization': f'Bearer {token}'},
     )
 
     assert response.status_code == HTTPStatus.OK
