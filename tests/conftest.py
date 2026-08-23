@@ -49,7 +49,7 @@ async def session():
 @pytest.fixture
 def token(client, user_in_the_db):
     response = client.post(
-        '/login',
+        '/auth/login',
         data={
             'username': user_in_the_db.email,
             'password': user_in_the_db.clean_password,
