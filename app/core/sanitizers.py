@@ -7,7 +7,3 @@ def sanitize_spaces(text: str) -> str:
 
 def sanitize_name(name: str) -> str:
     return sanitize_spaces(name).title()
-
-
-def normalize_title(title: str) -> str:
-    return sanitize_spaces(title).title()

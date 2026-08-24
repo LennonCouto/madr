@@ -47,12 +47,12 @@ async def get_id_author(
 
 
 @router.get('/', response_model=AuthorList)
-def get_authors(
+async def get_authors(
     filter: Annotated[Filter, Query()],
     session: AsyncSession = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):
-    return get_author_with_filters(
+    return await get_author_with_filters(
         session, filter.name, filter.offset, filter.limit
     )
 

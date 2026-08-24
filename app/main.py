@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from app.routers import auth, author, book, user
 
-app = FastAPI(swagger_ui_parameters={"syntaxHighlight": {"theme": "obsidian"}})
+app = FastAPI(swagger_ui_parameters={'syntaxHighlight': {'theme': 'obsidian'}})
 
 app.include_router(user.router)
 app.include_router(auth.router)

@@ -95,7 +95,8 @@ def test_token_expired_dont_refresh(client, user_in_the_db):
             '/auth/login',
             data={
                 'username': user_in_the_db.email,
-                'password': user_in_the_db.clean_password},
+                'password': user_in_the_db.clean_password,
+            },
         )
 
     assert response.status_code == HTTPStatus.OK
@@ -110,4 +111,5 @@ def test_token_expired_dont_refresh(client, user_in_the_db):
 
         assert response.status_code == HTTPStatus.UNAUTHORIZED
         assert response.json() == {
-            'detail': 'Você não possui credenciais válidas'}
+            'detail': 'Você não possui credenciais válidas'
+        }

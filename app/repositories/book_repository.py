@@ -1,11 +1,10 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
 from app.models.book import Book
 
 
-def save(session: Session, book: Book):
+def save(session: AsyncSession, book: Book):
     session.add(book)
     return book
 
@@ -20,8 +19,8 @@ async def get_by_id_book(session: AsyncSession, id_book: int):
     return stmt
 
 
-def get_filter_book(
-    session: Session,
+async def get_filter_book(
+    session: AsyncSession,
     title: str | None,
     year: str | None,
     offset: int,
@@ -35,6 +34,6 @@ def get_filter_book(
     if year:
         query = query.filter(Book.year.contains(year))
 
-    books = session.scalars(query.offset(offset).limit(limit))
+    books = await session.scalars(query.offset(offset).limit(limit))
 
     return {'books': books.all()}
