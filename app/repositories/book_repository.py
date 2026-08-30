@@ -29,7 +29,7 @@ async def get_filter_book(
     query = select(Book)
 
     if title:
-        query = query.filter(Book.title.contains(title))
+        query = query.filter(Book.title.icontains(title))
 
     if year:
         query = query.filter(Book.year.contains(year))

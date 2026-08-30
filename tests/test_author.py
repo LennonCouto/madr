@@ -52,6 +52,17 @@ def test_read_author_not_found(client, token):
     assert response.json() == {'detail': 'Author não consta no MADR'}
 
 
+def test_read_author_without_filter_by_name(client, author_in_the_db, token):
+    response = client.get(
+        f'/author/?name={author_in_the_db.name}',
+        headers={'Authorization': f'Bearer {token}'},
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    data = response.json()
+    assert data['authors'][0]['name'] == author_in_the_db.name
+
+
 def test_update_author_success(client, author_in_the_db, token):
     response = client.patch(
         f'/author/{author_in_the_db.id}',

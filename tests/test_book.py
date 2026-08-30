@@ -36,7 +36,34 @@ def test_create_conflict(client, book_in_the_db, author_in_the_db, token):
     assert response.json() == {'detail': 'Livro já possui registro'}
 
 
-def test_read_book(client, book_in_the_db, token):
+def test_read_books_without_filter_by_title(
+    client, book_in_the_db, book_2_in_the_db, token
+):
+    response = client.get(
+        f'/book/?title={book_in_the_db.title}',
+        headers={'Authorization': f'Bearer {token}'},
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    data = response.json()
+    assert len(data['books']) == 1
+    assert data['books'][0]['title'] == book_in_the_db.title
+
+
+def test_read_books_without_filter_by_year(
+    client, book_in_the_db, book_2_in_the_db, token
+):
+    response = client.get(
+        f'/book/?year={book_in_the_db.year}',
+        headers={'Authorization': f'Bearer {token}'},
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    data = response.json()
+    assert data['books'][0]['year'] == book_in_the_db.year
+
+
+def test_read_book_with_id(client, book_in_the_db, token):
     response = client.get(
         '/book/1', headers={'Authorization': f'Bearer {token}'}
     )
@@ -44,7 +71,7 @@ def test_read_book(client, book_in_the_db, token):
     assert response.status_code == HTTPStatus.OK
 
 
-def test_read_book_not_found(client, token):
+def test_read_book_not_found_with_id(client, token):
     response = client.get(
         '/book/1', headers={'Authorization': f'Bearer {token}'}
     )

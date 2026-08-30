@@ -90,15 +90,11 @@ def test_update_user_password(client, user_in_the_db, token):
     response = client.patch(
         f'/users/{user_in_the_db.id}',
         headers={'Authorization': f'Bearer {token}'},
-        json={
-            'password': 'new_password'
-        }
+        json={'password': 'new_password'},
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert verify_password(
-        'new_password', user_in_the_db.password
-    )
+    assert verify_password('new_password', user_in_the_db.password)
 
 
 def test_update_success(client, token, user_in_the_db):
@@ -151,7 +147,7 @@ def test_delete_user_not_found(client, token, user_in_the_db):
 def test_delete_user_with_wrong_user(client, user_2_in_the_db, token):
     response = client.delete(
         f'/users/{user_2_in_the_db.id}',
-        headers={'Authorization': f'Bearer {token}'}
+        headers={'Authorization': f'Bearer {token}'},
     )
 
     assert response.status_code == HTTPStatus.FORBIDDEN

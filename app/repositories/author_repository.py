@@ -19,7 +19,7 @@ async def get_author_with_filters(
     query = select(Author)
 
     if name:
-        query = query.filter(Author.name.contains(name))
+        query = query.filter(Author.name.icontains(name))
 
     authors = await session.scalars(query.offset(offset).limit(limit))
 
