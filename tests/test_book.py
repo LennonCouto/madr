@@ -65,7 +65,8 @@ def test_read_books_without_filter_by_year(
 
 def test_read_book_with_id(client, book_in_the_db, token):
     response = client.get(
-        '/book/1', headers={'Authorization': f'Bearer {token}'}
+        f'/book/{book_in_the_db.id}',
+        headers={'Authorization': f'Bearer {token}'},
     )
 
     assert response.status_code == HTTPStatus.OK

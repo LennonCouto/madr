@@ -33,8 +33,7 @@ def test_get_current_user_invalid_token_decode_error(client):
     token = 'Token_invalido'
 
     response = client.delete(
-        '/users/1',
-        headers={'Authorization': f'Bearer {token}'}
+        '/users/1', headers={'Authorization': f'Bearer {token}'}
     )
 
     assert response.status_code == HTTPStatus.UNAUTHORIZED

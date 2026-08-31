@@ -52,7 +52,7 @@ async def read_books_with_filter(
 
 @router.get('/{id_book}', status_code=HTTPStatus.OK, response_model=BookPublic)
 async def read_books_with_id(
-    id_book=int,
+    id_book: int,
     session: AsyncSession = Depends(get_session),
     current_user: User = Depends(get_current_user),
 ):

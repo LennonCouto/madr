@@ -20,9 +20,11 @@ async def test_create_user_db(session: AsyncSession):
 
 
 @pytest.mark.asyncio
-async def test_create_book_db(session):
+async def test_create_book_db(session, author_in_the_db):
     new_book = Book(
-        year='1992', title='cafe da manha dos campeões', author_id=1
+        year='1992',
+        title='cafe da manha dos campeões',
+        author_id=author_in_the_db.id
     )
 
     session.add(new_book)
