@@ -32,7 +32,7 @@ def test_token_expired_after_time(client, user_in_the_db):
         assert response.status_code == HTTPStatus.OK
         token = response.json()['access_token']
 
-    with freeze_time('1992-03-09 12:31:00'):
+    with freeze_time('1992-03-09 13:01:00'):
         response = client.patch(
             f'/users/{user_in_the_db.id}',
             headers={'Authorization': f'Bearer {token}'},
