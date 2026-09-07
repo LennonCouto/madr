@@ -1,0 +1,32 @@
+services:
+  lume_database:
+    image: postgres
+    environment:
+      POSTGRES_USER: dev_lennon
+      POSTGRES_DB: lume_db
+      POSTGRES_PASSWORD: dev123
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/posstgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev_lennon -d lume_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  madr:
+    image: madr
+    build: .
+    entrypoint: ./entrypoint.sh
+    ports:
+      - "8000:8000"
+    depends_on:
+      lume_database:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql+psycopg://dev_lennon:dev123@lume_database:5432/lume_db
+
+
+volumes:
+  pgdata:
