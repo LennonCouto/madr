@@ -60,7 +60,7 @@ Fluxo:
 
 ## 📌 Funcionalidades
 
-### 👤 Usuários (Implementando)
+### 👤 Usuários
 
 - Criar conta
 - Login
@@ -70,7 +70,7 @@ Fluxo:
 
 ---
 
-### 📚 Livros (Em construção)
+### 📚 Livros
 
 - Criar livro
 - Listar livros
@@ -79,7 +79,7 @@ Fluxo:
 
 ---
 
-### ✍️ Autores / Romancistas (Em construção)
+### ✍️ Autores / Romancistas
 
 - Criar autor
 - Listar autores
